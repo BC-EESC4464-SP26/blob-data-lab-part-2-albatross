@@ -111,26 +111,18 @@ time_s= ncread(satellite_filename, "time");
 
 netcdf.getAtt(ncid_satellite, netcdf.inqVarID(ncid_satellite, 'time'), 'units') % seconds since 1970-01-01T00:00:00Z
 
-satellite_time =datenum('1970-01-01 00:00:00');
+satellite_time =datenum ('1970-01-01 00:00:00');
 
 satellite_tt= satellite_time + (time_s/86400);
 
-s_time_resolution= diff(time_s)
-s_time_resolutio_min = s_time_resolution/60
-
-
+s_time
 
 %5b. In order to extract the satellite SSTanom data from the grid cell
 %nearest to OSP, calculate the indices of the longitude and latitude in the
 %satellite data grid nearest to the latitude and longitude of Ocean Station
 %Papa (as you did for the WOA data in Step 1 above)
-lats=ncreadatt(satellite_filename,"/", "lat");
-lons = ncreadatt(satellite_filename,"/","lon");
-
-[lonmins, indlons]= min(abs(lons-(-144.4)));
-
-[latmins, indlats] = min(abs(lats - 50.3));
-
+% -->
+% -->
 
 %% 6. Plot the satellite SSTanom data extracted from Ocean Station Papa and
 %the mooring-based temperature anomaly calculated by combining the OOI and

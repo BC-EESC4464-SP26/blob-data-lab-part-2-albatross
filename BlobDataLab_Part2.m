@@ -103,7 +103,7 @@ title( 'Temperature Time Series Anomaly')
 %timestamp and use the datenum function to make the conversion)
 % -->
 
-satellite_filename = 'jplMURSST41anommday_45dc_044e_88f0.nc'
+satellite_filename = 'jplMURSST41anommday_72e0_376a_802d.nc';
 
 ncid_satellite=netcdf.open(satellite_filename, "NC_NOWRITE");
 
@@ -115,17 +115,17 @@ satellite_time =datenum('1970-01-01 00:00:00');
 
 satellite_tt= satellite_time + (time_s/86400);
 
-s_time_resolution= diff(time_s)
-s_time_resolutio_min = s_time_resolution/60
+s_time_resolution= diff(time_s);
+s_time_resolutio_min = s_time_resolution/60;
 
-
+ncdisp(satellite_filename)
 
 %5b. In order to extract the satellite SSTanom data from the grid cell
 %nearest to OSP, calculate the indices of the longitude and latitude in the
 %satellite data grid nearest to the latitude and longitude of Ocean Station
 %Papa (as you did for the WOA data in Step 1 above)
-lats=ncreadatt(satellite_filename,"/", "lat");
-lons = ncreadatt(satellite_filename,"/","lon");
+lats=ncread(satellite_filename,"latitude");
+lons = ncread(satellite_filename,"longitude");
 
 [lonmins, indlons]= min(abs(lons-(-144.4)));
 
@@ -137,3 +137,20 @@ lons = ncreadatt(satellite_filename,"/","lon");
 %WOA data together as separate lines on the same time-series plot (adding
 %to your plot from step 4) so that you can compare the two records
 
+sstAnom=ncread(satellite_filename,"sstAnom");
+anomaly_s = squeeze(sstAnom(indlons,indlats,:));
+
+interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt);
+
+
+figure (2); clf
+plot(tt, anomaly, "r")
+datetick('x','mmm yy')
+ylabel('Seawater Temperature (C)')
+xlabel ('Time (month, year)')
+title( 'Temperature Time Series Anomaly')
+hold on
+
+plot(tt, interpolatedsstAnom_s, "b")
+legend({'WOA Time Series', 'Satelite Time Series'}, 'Location','southeast')
+hold off

@@ -65,10 +65,10 @@ woa_papa_rep = [repmat(woa_papa,7,1); woa_papa(1:3)];
 addpath("OOI_StationPapa_FLMB_CTDdata_BlobDataLab/")
 addpath ('blob-data-lab-part-1-albatross/')
 
-figure (1); clf
+figure (3); clf
 plot(woa_time,woa_papa_rep, 'b')
 hold on 
-plot(tt,ctdmo_seawater_temp, 'g')
+plot(tt_full_convert,ctdmo_seawater_temp_full, 'g')
 datetick('x', 'mmmyy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
@@ -82,16 +82,17 @@ hold off
 % original extended monthly data (woa_time) onto the times when the OOI
 % data were collected (from your Part 1 analysis)
 
-interpolatedWOA= interp1(woa_time,woa_papa_rep, tt);
+interpolatedWOA= interp1(woa_time,woa_papa_rep, tt_full_convert);
 
 %% 3b. Calculate the temperature anomaly as the difference between the OOI mooring
 % observations (using the smoothed data during good intervals) and the
 % climatological data from the World Ocean Atlas interpolated onto those
 % same timepoints
 % -->
-anomaly = OneDay_Smooth - interpolatedWOA; %WOA is like a baseline, so it should be subtracted from OOI data
+anomaly = OneDay_Smooth_full - interpolatedWOA; %WOA is like a baseline, so it should be subtracted from OOI data
 %% 4. Plot the time series of the T anomaly you have now calculated by combining the WOA and OOI data
-plot(tt, anomaly, "r")
+figure (4); clf
+plot(tt_full_convert, anomaly, "r")
 datetick('x','mmm yy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
@@ -140,17 +141,17 @@ lons = ncread(satellite_filename,"longitude");
 sstAnom=ncread(satellite_filename,"sstAnom");
 anomaly_s = squeeze(sstAnom(indlons,indlats,:));
 
-interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt);
+interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt_full_convert);
 
 
-figure (2); clf
-plot(tt, anomaly, "r")
+figure (5); clf
+plot(tt_full_convert, anomaly, "r")
 datetick('x','mmm yy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
 title( 'Temperature Time Series Anomaly')
 hold on
 
-plot(tt, interpolatedsstAnom_s, "b")
+plot(tt_full_convert, interpolatedsstAnom_s, "b")
 legend({'WOA Time Series', 'Satelite Time Series'}, 'Location','southeast')
 hold off

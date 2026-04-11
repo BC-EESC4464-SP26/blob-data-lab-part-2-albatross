@@ -66,13 +66,14 @@ addpath("OOI_StationPapa_FLMB_CTDdata_BlobDataLab/")
 addpath ('blob-data-lab-part-1-albatross/')
 
 figure (3); clf
-plot(woa_time,woa_papa_rep, 'b')
-hold on 
-plot(tt_full_convert,ctdmo_seawater_temp_full, 'g')
+plot(tt_full_convert,ctdmo_seawater_temp_full, '.k')
 datetick('x', 'mmmyy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
 title( 'WOA and OO1 Temperature Time Series')
+
+hold on
+plot(woa_time,woa_papa_rep, 'b',LineWidth=3)
 legend({'WOA Time Series', 'OO1 Time Series'}, 'Location', 'northwest')
 hold off
 
@@ -82,17 +83,17 @@ hold off
 % original extended monthly data (woa_time) onto the times when the OOI
 % data were collected (from your Part 1 analysis)
 
-interpolatedWOA= interp1(woa_time,woa_papa_rep, tt_full_convert);
+interpolatedWOA= interp1(woa_time,woa_papa_rep, finalTT_full);
 
 %% 3b. Calculate the temperature anomaly as the difference between the OOI mooring
 % observations (using the smoothed data during good intervals) and the
 % climatological data from the World Ocean Atlas interpolated onto those
 % same timepoints
 % -->
-anomaly = OneDay_Smooth_full - interpolatedWOA; %WOA is like a baseline, so it should be subtracted from OOI data
+anomaly = OneDay_Smooth_full_removed - interpolatedWOA; %WOA is like a baseline, so it should be subtracted from OOI data
 %% 4. Plot the time series of the T anomaly you have now calculated by combining the WOA and OOI data
 figure (4); clf
-plot(tt_full_convert, anomaly, "r")
+plot(finalTT_full, anomaly, "r")
 datetick('x','mmm yy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
@@ -141,6 +142,7 @@ lons = ncread(satellite_filename,"longitude");
 sstAnom=ncread(satellite_filename,"sstAnom");
 
 %% This is the plot for sstAnom
+figure(5); clf
 imagesc(lats, lons, sstAnom(:,:,86))
 colorbar
 
@@ -150,7 +152,7 @@ lonlimits = [min(lons) max(lons)];
 Reference = georefcells(latlimits,lonlimits, size(sstAnom(:,:,86)));
 colorful = squeeze(sstAnom(:,:,86));
 
-figure(5); clf
+figure(6); clf
 worldmap([20 60],[-179 -120])
 %contourfm(double(lats), double(lons), sstAnom(:,:,86)','linecolor','none');
 geoshow(colorful, Reference, 'DisplayType', "texturemap")
@@ -164,15 +166,15 @@ title("SST Anomaly, February 2020")
 anomaly_s = squeeze(sstAnom(indlons,indlats,:));
 
 
-figure (5); clf
-plot(tt_full_convert, anomaly, ".r")
+figure (7); clf
+plot(finalTT_full, anomaly, ".r")
 datetick('x','mmm yy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
 title( 'Temperature Time Series Anomaly')
 hold on
 
-plot(satellite_tt, anomaly_s, "b")
+plot(satellite_tt, anomaly_s, "b", LineWidth=3)
 legend({'WOA Time Series', 'Satelite Time Series'}, 'Location','southeast')
 hold off
 

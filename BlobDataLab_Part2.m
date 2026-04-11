@@ -163,18 +163,16 @@ title("SST Anomaly, February 2020")
 %% Back to question 6
 anomaly_s = squeeze(sstAnom(indlons,indlats,:));
 
-interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt_full_convert);
-
 
 figure (5); clf
-plot(tt_full_convert, anomaly, "r")
+plot(tt_full_convert, anomaly, ".r")
 datetick('x','mmm yy')
 ylabel('Seawater Temperature (C)')
 xlabel ('Time (month, year)')
 title( 'Temperature Time Series Anomaly')
 hold on
 
-plot(tt_full_convert, interpolatedsstAnom_s, "b")
+plot(satellite_tt, anomaly_s, "b")
 legend({'WOA Time Series', 'Satelite Time Series'}, 'Location','southeast')
 hold off
 

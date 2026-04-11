@@ -137,10 +137,25 @@ lons = ncread(satellite_filename,"longitude");
 %the mooring-based temperature anomaly calculated by combining the OOI and
 %WOA data together as separate lines on the same time-series plot (adding
 %to your plot from step 4) so that you can compare the two records
-figure (6);clf
-plot(sa)
 
 sstAnom=ncread(satellite_filename,"sstAnom");
+
+%% This is the plot for sstAnom
+imagesc(lats, lons, sstAnom(:,:,86))
+colorbar
+
+latlimits = [min(lats) max(lats)];
+lonlimits = [min(lons) max(lons)];
+
+Reference = georefcells(latlimits,lonlimits, size(sstAnom(:,:,86)))
+
+figure(5); clf
+worldmap([20 60],[-179 -120])
+contourfm(double(lats), double(lons), sstAnom(:,:,86)','linecolor','none');
+colormap cool
+title("SST Anomaly, February 2020")
+
+%% Back to question 6
 anomaly_s = squeeze(sstAnom(indlons,indlats,:));
 
 interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt_full_convert);
@@ -157,3 +172,5 @@ hold on
 plot(tt_full_convert, interpolatedsstAnom_s, "b")
 legend({'WOA Time Series', 'Satelite Time Series'}, 'Location','southeast')
 hold off
+
+%%

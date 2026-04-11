@@ -139,6 +139,28 @@ lons = ncread(satellite_filename,"longitude");
 %to your plot from step 4) so that you can compare the two records
 
 sstAnom=ncread(satellite_filename,"sstAnom");
+
+%% This is the plot for sstAnom
+imagesc(lats, lons, sstAnom(:,:,86))
+colorbar
+
+latlimits = [min(lats) max(lats)];
+lonlimits = [min(lons) max(lons)];
+
+Reference = georefcells(latlimits,lonlimits, size(sstAnom(:,:,86)));
+colorful = squeeze(sstAnom(:,:,86));
+
+figure(5); clf
+worldmap([20 60],[-179 -120])
+%contourfm(double(lats), double(lons), sstAnom(:,:,86)','linecolor','none');
+geoshow(colorful, Reference, 'DisplayType', "texturemap")
+colormap spring
+geoshow('landareas.shp','FaceColor','black')
+c = colorbar("eastoutside")
+c.Label.String = "degrees Celsius"
+title("SST Anomaly, February 2020")
+
+%% Back to question 6
 anomaly_s = squeeze(sstAnom(indlons,indlats,:));
 
 interpolatedsstAnom_s= interp1(satellite_tt,anomaly_s, tt_full_convert);
